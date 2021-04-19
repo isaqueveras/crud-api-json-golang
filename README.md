@@ -47,3 +47,71 @@ func main() {
   configurarServidor()
 }
 ```
+
+#### 3° Aula
+Na terceira aula, aprendi a fazer um _struct_ onde foi criado a estrutura _Livro_, com os atributos de (id, titulo, autor).
+
+```go
+type Livro struct {
+  Id int
+  Titulo string
+  Autor string
+}
+```
+
+Para usar o json, precisamos importar de _"encoding/json"_. 
+Logo em seguida temos que criar uma lista para que possamos ter dados para manipular. Começamos criando a nossa lista
+
+```go
+// Criando uma lista de livros
+var Livros []Livro = []Livro {
+  Livro {
+    Id: 1,
+    Titulo: "O Guarani",
+    Autor: "José de Alencar",
+  },
+  Livro {
+    Id: 2,
+    Titulo: "Ponto de inflexão",
+    Autor: "Flávio Augusto",
+  },
+}
+```
+
+Criei mais uma função para listar os livros, e chamei essa função dentro da função _configurarRotas()_
+
+```go
+// função que recebe uma Requisição e uma Resposta
+func listarLivros(w http.ResponseWriter, r *http.Request) {
+  encoder := json.NewEncoder(w)
+  encoder.Encode(Livros)	
+}
+```
+
+Para que essa função esteja funcionando, chamo ela nas funções que adminstra as rotas
+
+```go
+func configurarRotas() {
+  http.HandleFunc("/", rotaPrincipal)
+
+  // Criando a rota para listar os livros
+  http.HandleFunc("/livros", listarLivros)
+}
+```
+
+Acessando a url http://localhost:1337/livros, iremos ter o seguinte resultado no navegador.
+
+```json
+[
+  {
+    "Id":1,
+    "Titulo": "O Guarani",
+    "Autor": "José de Alencar"
+  },
+  {
+    "Id":2,
+    "Titulo": "Ponto de inflexão",
+    "Autor": "Flávio Augusto"
+  }
+]
+```
